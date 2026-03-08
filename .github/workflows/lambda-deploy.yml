@@ -30,8 +30,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
 
-      - name: Deploy Lambda function # zip the lambda folder and updates Lambda fubnction
+      - name: Deploy Lambda function # zip the lambda folder and updates Lambda function
         run: |
           cd lambda
           zip -r function.zip .
-          aws lambda update-function-code --function-name my-test-cicd-lambda --zip-file fileb://lambda_function.zip
+          aws lambda update-function-code --function-name my-test-cicd-lambda --zip-file fileb://function.zip
