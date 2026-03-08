@@ -4,7 +4,7 @@ on: # when to trigger the workflow to start
     branches:
       - main # only when pushing to main branch
     paths: 
-      - 'lambda/' # only when pushing to files in lambda folder
+      - 'lambda/**' # only when pushing to files in lambda folder
 
 jobs:
   deploy_lambda: # name of the job
