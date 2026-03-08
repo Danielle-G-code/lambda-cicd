@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest # the type of runner to run the job on
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python # sets up Python environment
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.14'
+          python-version: '3.12'
 
       - name: Install dependencies # installs any packages 
         run: |
@@ -24,7 +24,7 @@ jobs:
           pip install -r lambda/requirements.txt -t lambda/
 
       - name: Configure AWS credentials # sets up AWS credentials using secrets stored in GitHub repository settings
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -34,4 +34,4 @@ jobs:
         run: |
           cd lambda
           zip -r function.zip .
-          aws lambda update-function-code --function-name my-test-cicd-lambda --zip-file fileb://lambda.zip
+          aws lambda update-function-code --function-name my-test-cicd-lambda --zip-file fileb://function.zip
