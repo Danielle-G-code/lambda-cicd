@@ -31,7 +31,7 @@ jobs:
             - name: Deploy CloudFormation Stack (Test) # Deploy a test stack for the pr
               run: |
                 stack_name="pr-test-stack-${{github.event.pull_request.number}}"
-                aws cloudformation create-stack --stack-name $stack_name -- template-body file://cloudformation/s3_bucket.yml --parameters ParameterKey=Environment,ParameterValue=test
+                aws cloudformation create-stack --stack-name $stack_name --template-body file://cloudformation/s3_bucket.yml --parameters ParameterKey=Environment,ParameterValue=test
 
             - name: Comment on the pr # Let the pr author know that the test stack has been deployed
               uses: actions/github-script@v6
