@@ -30,8 +30,12 @@ jobs:
 
             - name: Deploy CloudFormation Stack (Test) # Deploy a test stack for the pr
               run: |
-                stack_name="pr-test-stack-${{github.event.pull_request.number}}"
-                aws cloudformation create-stack --stack-name $stack_name -- template-body file://cloudformation/s3_bucket.yml --parameters ParameterKey=Environment,ParameterValue=test
+                stack_name="pr-test-stack-${{ github.event.pull_request.number }}"
+                if aws cloudformation describe-stacks --stack-name $stack_name 2>/dev/null; then
+                  aws cloudformation update-stack --stack-name $stack_name --template-body file://cloudformation/s3_bucket.yml --parameters ParameterKey=Environment,ParameterValue=test || echo "No updates needed"
+                else
+                  aws cloudformation create-stack --stack-name $stack_name --template-body file://cloudformation/s3_bucket.yml --parameters ParameterKey=Environment,ParameterValue=test
+                fi
 
             - name: Comment on the pr # Let the pr author know that the test stack has been deployed
               uses: actions/github-script@v6
@@ -42,7 +46,7 @@ jobs:
                         issue_number: context.issue.number, 
                         owner: context.repo.owner, 
                         repo: context.repo.repo,
-                        body: 'Cloudformation test stack deployed. Stack name: pr-test-stack-${{github.event.pull_request.number}}'
+                        body: 'Cloudformation test stack deployed. Stack name: pr-test-stack-${{ github.event.pull_request.number }}'
                         })
 
     # Second job to clean up the test stack when the pr is merged
@@ -59,5 +63,5 @@ jobs:
 
             - name: Delete CloudFormation Stack (Test) # Clean up the test stack when the pr is merged
               run: |
-                stack_name="pr-test-stack-${{github.event.pull_request.number}}"
+                stack_name="pr-test-stack-${{ github.event.pull_request.number }}"
                 aws cloudformation delete-stack --stack-name $stack_name
