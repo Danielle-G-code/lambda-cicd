@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: "CloudFormation template to create an S3 bucket for CICD pull request"
+Description: "CloudFormation template to create an S3 bucket for CI/CD pull request"
 Parameters:
     Environment:
         Type: String
