@@ -1,15 +1,17 @@
+# CloudFormation template to create an S3 bucket for CI/CD pull request testing
 AWSTemplateFormatVersion: '2010-09-09'
 Description: "CloudFormation template to create an S3 bucket for CI/CD pull request"
-Parameters:
-    Environment:
+
+Parameters: # Define a parameter for the environment (test, staging, production)
+    Environment: 
         Type: String
         Default: test
         AllowedValues: 
-          - test
+          - test 
           - staging
           - production 
 
-Resources:
+Resources: # Define the S3 bucket resource with tags for environment and GitHub Actions testing
   MyS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -19,7 +21,7 @@ Resources:
         - Key: Environment
           Value: GitHubActionsTesting
 
-Outputs:
+Outputs: # Output the name of the created S3 bucket for reference in the pull request comments
   BucketName:
     Description: 'Name of the S3 bucket'
     Value: !Ref MyS3Bucket

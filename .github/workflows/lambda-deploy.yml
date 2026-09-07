@@ -1,36 +1,44 @@
+# Anything inside lambda/** will trigger this workflow to run when pushed to the main branch. 
+# This workflow will zip the lambda directory and update the Lambda function with the new code in AWS
+
+# Name of workflow
 name: Deploy AWS Lambda Function
-on: # when to trigger the workflow to start
+on: # When to trigger the workflow to start
+# push = trigger workflow on push to a branch
   push:
     branches:
-      - main # only when pushing to main branch
+      - main # Only when pushing to main branch
     paths: 
-      - 'lambda/**' # only when pushing to files in lambda folder
+      - 'lambda/**' # Only when pushing to files in lambda directory
 
+# Jobs to run inside of the workflow
 jobs:
-  deploy_lambda: # name of the job
-    runs-on: ubuntu-latest # the type of runner to run the job on
-    steps:
+  deploy_lambda: # Name of the job
+    runs-on: ubuntu-latest # The type of runner to run the job on
+    steps: # Steps to execute inside the job
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 # Checks repo code out to the runner so it can access it
 
-      - name: Set up Python # sets up Python environment
+      - name: Set up Python # Sets up Python environment
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Install dependencies # installs any packages 
+      - name: Install dependencies # Installs any packages in requirements.txt to the lambda folder so they can be included in the deployment package.
+      # .txt is empty for this project but for more complex projects it would list the python dependencies required for the lambda function to run.
         run: |
           python -m pip install --upgrade pip
           pip install -r lambda/requirements.txt -t lambda/
 
-      - name: Configure AWS credentials # sets up AWS credentials using secrets stored in GitHub repository settings
+      - name: Configure AWS credentials # Sets up AWS credentials using secrets stored in GitHub repository settings
         uses: aws-actions/configure-aws-credentials@v4
         with:
+          # Will check the repo for the secrets AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY and use them to configure the AWS CLI
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
 
-      - name: Deploy Lambda function # zip the lambda folder and updates Lambda function
+      - name: Deploy Lambda function # Zips the lambda directory and updates the Lambda function
         run: |
           cd lambda
           zip -r function.zip .
