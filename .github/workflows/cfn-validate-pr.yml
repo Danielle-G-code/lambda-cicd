@@ -2,9 +2,9 @@ name: Validate CloudFormation Template on PR
 
 on:
   pull_request:
-    paths:
-      - cloudformation/**
       types: [opened, synchronize, reopened, closed]
+      paths:
+        - cloudformation/**
 
 permissions:
     pull-requests: write
