@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - cloudformation/**
+      types: [opened, synchronize, reopened, closed]
 
 permissions:
     pull-requests: write
@@ -30,10 +31,10 @@ jobs:
 
             - name: Deploy CloudFormation Stack (Test) # Deploy a test stack for the pr
               run: |
-                stack_name="pr-test-stack-${{ github.event.pull_request.number }}"
-                if aws cloudformation describe-stacks --stack-name $stack_name 2>/dev/null; then
+                stack_name="pr-test-stack-${{ github.event.pull_request.number }}" 
+                if aws cloudformation describe-stacks --stack-name $stack_name 2>/dev/null; then 
                   aws cloudformation update-stack --stack-name $stack_name --template-body file://cloudformation/s3_bucket.yml --parameters ParameterKey=Environment,ParameterValue=test || echo "No updates needed"
-                else
+                else 
                   aws cloudformation create-stack --stack-name $stack_name --template-body file://cloudformation/s3_bucket.yml --parameters ParameterKey=Environment,ParameterValue=test
                 fi
 
